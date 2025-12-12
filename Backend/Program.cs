@@ -9,6 +9,12 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerServices();
 builder.Services.AddCorsServices();
 
+builder.Services.AddSwaggerGen(c =>
+{
+  c.CustomOperationIds(api =>
+      $"{api.ActionDescriptor.RouteValues["controller"]}_{api.ActionDescriptor.RouteValues["action"]}");
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -17,6 +23,7 @@ using (var scope = app.Services.CreateScope())
   context.Database.EnsureCreated();
   await DbSeeder.SeedAsync(context);
 }
+
 
 app.ApplyCorsConfig();
 app.UseHttpsRedirection();

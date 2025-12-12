@@ -333,3 +333,4 @@ C:\GIT\2025\MVP\LogIt\Backend\obj\Debug\net9.0\staticwebassets.pack.json
 C:\GIT\2025\MVP\LogIt\Backend\obj\Debug\net9.0\Backend.csproj.Up2Date
 C:\GIT\2025\MVP\LogIt\Backend\obj\Debug\net9.0\Backend.genruntimeconfig.cache
 C:\GIT\2025\MVP\LogIt\Backend\obj\Debug\net9.0\ref\Backend.dll
+C:\GIT\2025\MVP\LogIt\Backend\obj\Debug\net9.0\Backend.sourcelink.json
