@@ -1,20 +1,12 @@
 import { useCallback, useState } from "react";
+import type { ShowPasswordState } from "../input/password-input/password-input";
 import SignUp from "./sign-up/sign-up";
 import Login from "./login/login";
 
-export type AuthProps = {
-  showPassword: ShowPasswordState,
-  handleShowPassword: (field: keyof ShowPasswordState) => void;
-}
-
-type ShowPasswordState  = {
-  login: boolean;
-  signup: boolean;
-  signupConfirm: boolean;
-}
+export type AuthView = "login" | "signup";
 
 export default function AuthForm() {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+const [view, setView] = useState<AuthView>("login");
   const [showPassword, setShowPassword] = useState<ShowPasswordState >({
     login: false,
     signup: false,
@@ -38,25 +30,37 @@ const handleShowPassword = useCallback(
         {/* Toggle Buttons */}
         <div className="flex border-b border-gray-200">
           <button
-            className={`flex-1 py-4 text-lg font-semibold transition 
-            ${isLogin ? "text-blue-500 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-blue-500" : "text-gray-500"}`}
-            onClick={() => setIsLogin(true)}
+            className={`flex-1 py-4 text-lg font-semibold transition cursor-pointer
+            ${view === "login" ? "text-blue-500 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-blue-500" : "text-gray-500"}`}
+            onClick={() => setView("login")}
           >
             Login
           </button>
           <button
-            className={`flex-1 py-4 text-lg font-semibold transition 
-            ${!isLogin ? "text-blue-500 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-blue-500" : "text-gray-500"}`}
-            onClick={() => setIsLogin(false)}
+            className={`flex-1 py-4 text-lg font-semibold transition cursor-pointer
+            ${view === "signup" ? "text-blue-500 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-blue-500" : "text-gray-500"}`}
+            onClick={() => setView("signup")}
           >
             Sign Up
           </button>
         </div>
 
-        {isLogin ? 
-          <Login showPassword={showPassword} handleShowPassword={handleShowPassword} /> : 
-          <SignUp showPassword={showPassword} handleShowPassword={handleShowPassword} />
-        }
+        {view === "login" && (
+          <Login
+            showPassword={showPassword}
+            handleShowPassword={handleShowPassword}
+            goTo={setView}
+          />
+        )}
+
+        {view === "signup" && (
+          <SignUp
+            showPassword={showPassword}
+            handleShowPassword={handleShowPassword}
+            goTo={setView}
+          />
+        )}
+
       </div>
     </div>
   );

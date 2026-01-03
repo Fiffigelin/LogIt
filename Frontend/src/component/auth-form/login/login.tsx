@@ -1,7 +1,13 @@
-import PasswordInput from "../../input/password-input/password-input";
-import type { AuthProps } from "../auth-form";
+import PasswordInput, { type ShowPasswordState } from "../../input/password-input/password-input";
+import type { AuthView } from "../auth-form";
 
-function Login({showPassword, handleShowPassword}: AuthProps) {
+type LoginProps = {
+  showPassword: ShowPasswordState,
+  handleShowPassword: (field: keyof ShowPasswordState) => void;
+  goTo: (view: AuthView) => void;
+}
+
+function Login({showPassword, handleShowPassword, goTo}: LoginProps) {
   return (
     <form
       className="p-8 growDown"
@@ -25,7 +31,7 @@ function Login({showPassword, handleShowPassword}: AuthProps) {
           required
         />
       </div>
-      <PasswordInput showPassword={showPassword} handleShowPassword={handleShowPassword} />
+      <PasswordInput label={"Password"} showPassword={showPassword.login} handleShowPassword={() => handleShowPassword("login")} />
 
       <div className="flex justify-between items-center mb-4">
         <label className="flex items-center gap-2">
@@ -36,16 +42,16 @@ function Login({showPassword, handleShowPassword}: AuthProps) {
           Forgot password?
         </a>
       </div>
-      <button className="w-full p-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600">
+      <button className="w-full p-3 bg-blue-500 text-white rounded-lg font-semibold cursor-pointer hover:bg-blue-600">
         Sign In
       </button>
       <p className="text-center text-gray-600 text-sm mt-6">
         Don't have an account?{" "}
         <button
-          className="text-blue-500 font-medium"
+          className="text-blue-500 font-medium cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
-            console.log(false);
+            goTo("signup");
           }}
         >
           Sign up

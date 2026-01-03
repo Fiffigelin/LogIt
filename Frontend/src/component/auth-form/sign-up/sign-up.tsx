@@ -1,6 +1,14 @@
-import type { AuthProps } from "../auth-form";
+import PasswordInput, { type ShowPasswordState } from "../../input/password-input/password-input";
+import TextInput from "../../input/text-input/text-input";
+import type { AuthView } from "../auth-form";
 
-function SignUp({showPassword, handleShowPassword}: AuthProps) {
+type SignUpProps = {
+  showPassword: ShowPasswordState,
+  handleShowPassword: (field: keyof ShowPasswordState) => void;
+  goTo: (view: AuthView) => void;
+}
+
+function SignUp({showPassword, handleShowPassword, goTo}: SignUpProps) {
   return (
     <form
       className="p-8 growDown"
@@ -16,55 +24,12 @@ function SignUp({showPassword, handleShowPassword}: AuthProps) {
         Get started with your free account
       </p>
       <div className="mb-4">
-        <label className="block mb-2 font-medium text-gray-700">Full Name</label>
-        <input
-          type="text"
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          placeholder="Enter your full name"
-          required
-        />
+        <TextInput label={"Full Name"} type={"text"} placeholder="Enter your full name"/>
+        <TextInput label={"Email"} type={"email"} placeholder="Enter your email"/>
+        <PasswordInput label={"Password"} showPassword={showPassword.signup} handleShowPassword={() => handleShowPassword("signup")} />
+        <PasswordInput label={"Confirm Password"} showPassword={showPassword.signupConfirm} handleShowPassword={() => handleShowPassword("signupConfirm")} />
       </div>
-      <div className="mb-4">
-        <label className="block mb-2 font-medium text-gray-700">Email</label>
-        <input
-          type="email"
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          placeholder="Enter your email"
-          required
-        />
-      </div>
-      <div className="mb-4 relative">
-        <label className="block mb-2 font-medium text-gray-700">Password</label>
-        <input
-          type={showPassword.signup ? "text" : "password"}
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          placeholder="Create a password"
-          required
-        />
-        <span
-          className="absolute right-3 top-11 cursor-pointer text-gray-500"
-          onClick={() => handleShowPassword("signup")}
-        >
-          👁️
-        </span>
-      </div>
-      <div className="mb-4 relative">
-        <label className="block mb-2 font-medium text-gray-700">
-          Confirm Password
-        </label>
-        <input
-          type={showPassword.signupConfirm ? "text" : "password"}
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          placeholder="Confirm password"
-          required
-        />
-        <span
-          className="absolute right-3 top-11 cursor-pointer text-gray-500"
-          onClick={() => handleShowPassword("signupConfirm")}
-        >
-          👁️
-        </span>
-      </div>
+
       <label className="flex items-center gap-2 text-gray-600 text-sm mb-4">
         <input type="checkbox" required />
         <span>
@@ -78,16 +43,16 @@ function SignUp({showPassword, handleShowPassword}: AuthProps) {
           </a>
         </span>
       </label>
-      <button className="w-full p-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600">
+      <button className="w-full p-3 bg-blue-500 text-white rounded-lg font-semibold cursor-pointer hover:bg-blue-600">
         Create Account
       </button>
       <p className="text-center text-gray-600 text-sm mt-6">
         Already have an account?{" "}
         <button
-          className="text-blue-500 font-medium"
+          className="text-blue-500 font-medium cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
-            console.log(true);
+            goTo("login");
           }}
         >
           Sign in
