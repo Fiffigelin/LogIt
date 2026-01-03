@@ -1,22 +1,34 @@
-import { FaRegEye, FaRegEyeSlash  } from "react-icons/fa";
-import type { AuthProps } from "../../auth-form/auth-form";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
-function PasswordInput({showPassword, handleShowPassword}: AuthProps) {
+export type ShowPasswordState = {
+  login: boolean;
+  signup: boolean;
+  signupConfirm: boolean;
+};
+
+type AuthProps = {
+  label: string;
+  showPassword: boolean;
+  handleShowPassword: () => void;
+};
+
+function PasswordInput({ label, showPassword, handleShowPassword }: AuthProps) {
   return (
     <div className="mb-4 relative">
-      <label className="block mb-2 font-medium text-gray-700">Password</label>
-      <div className="flex border rounded-lg">
+      <label className="block mb-2 font-medium text-gray-700">{label}</label>
+
+      <div className="flex border rounded-lg focus-within:ring-2 focus-within:ring-blue-400">
         <input
-          type={showPassword.login ? "text" : "password"}
-          className="w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          type={showPassword ? "text" : "password"}
+          className="w-full p-3 rounded-l-lg focus:outline-none"
           placeholder="Enter your password"
           required
-          />
+        />
         <span
-          className="cursor-pointer text-black p-4 self-center"
-          onClick={() => handleShowPassword("login")}
-          >
-          {showPassword.login ? <FaRegEyeSlash /> : <FaRegEye />}
+          className="cursor-pointer text-black p-3 flex items-center"
+          onClick={handleShowPassword}
+        >
+          {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
         </span>
       </div>
     </div>
