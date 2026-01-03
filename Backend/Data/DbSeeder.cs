@@ -12,13 +12,21 @@ public static class DbSeeder
     {
       var hasher = new PasswordHasher<User>();
 
-      var defaultUser = new User("admin", "admin@example.com");
-      defaultUser.UpdatePassword(hasher.HashPassword(null!, "Admin123!"));
+      var defaultUser = new User("Bojack Horseman", "bojack-horse@mail.com");
+      defaultUser.UpdatePassword(hasher.HashPassword(null!, "Bojack123!?"));
 
       context.Users.Add(defaultUser);
       await context.SaveChangesAsync();
 
-      Console.WriteLine("Default user created: admin@example.com / Admin123!");
+      Console.BackgroundColor = ConsoleColor.Green;
+      Console.WriteLine("");
+      Console.WriteLine("=====================================================================");
+      Console.WriteLine("===||                    Default user created                    ||==");
+      Console.WriteLine("===||                    Email: bojack-horse@mail.com            ||==");
+      Console.WriteLine("===||                    Password: Bojack123!?                   ||==");
+      Console.WriteLine("=====================================================================");
+      Console.ResetColor();
+      Console.WriteLine("");
     }
   }
 }
