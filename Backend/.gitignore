@@ -482,3 +482,14 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+Backend/obj/Debug/net9.0/Backend.AssemblyInfoInputs.cache
+Backend/obj/Debug/net9.0/Backend.AssemblyInfoInputs.cache
+Backend/obj/Debug/net9.0/Backend.AssemblyInfo.cs
+Backend/LogIt.db-shm
+Backend/LogIt.db-wal
+Backend/bin/Debug/net9.0/Backend.dll
+Backend/bin/Debug/net9.0/Backend.exe
+Backend/obj/Debug/net9.0/Backend.AssemblyInfo.cs
+Backend/obj/Debug/net9.0/Backend.AssemblyInfoInputs.cache
+Backend/obj/Debug/net9.0/Backend.AssemblyInfo.cs
