@@ -6,7 +6,7 @@ export default class ClientBase {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getBaseUrl(generatedEndpoint: string, baseUrl?: string): string {
+  getBaseUrl(_generatedEndpoint: string, _baseUrl?: string): string {
     return this.configurationProvider?.url ?? "";
   }
 
