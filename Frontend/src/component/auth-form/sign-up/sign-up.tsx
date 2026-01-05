@@ -1,21 +1,48 @@
-import PasswordInput, { type ShowPasswordState } from "../../input/password-input/password-input";
-import TextInput from "../../input/text-input/text-input";
+import { useCallback, useState } from "react";
+import type { RegisterUserDto } from "../../../api/client";
 import type { AuthView } from "../auth-form";
+import { isEmail } from "../../../utils/validation";
+import TextInput from "../../input/text-input/text-input";
+import PasswordConfirmationGroup from "../../input/password-confirmation-group/password-confirmation";
 
 type SignUpProps = {
-  showPassword: ShowPasswordState,
-  handleShowPassword: (field: keyof ShowPasswordState) => void;
+  user: RegisterUserDto | undefined;
+  onRegistration: (property: keyof RegisterUserDto, value: string | undefined) => void;
   goTo: (view: AuthView) => void;
+  onSubmit: () => Promise<void>;
 }
 
-function SignUp({showPassword, handleShowPassword, goTo}: SignUpProps) {
+function SignUp({user, onRegistration, goTo, onSubmit}: SignUpProps) {
+  const [validEmail, setValidEmal] = useState<boolean>(true);
+  // const isFormValid = !!user?.email && validLoginEmail && !!user?.password;
+
+  const handleFullName = useCallback(
+    (value: string) => {
+      onRegistration("username", value);
+    },
+    [onRegistration]
+  );
+
+  const handleEmail = useCallback(
+    (value: string) => {
+      onRegistration("email", value);
+      setValidEmal(isEmail(value));
+    },
+    [onRegistration]
+  );
+
+  const handlePassword = useCallback(
+    (value: string) => {
+      onRegistration("password", value);
+    },
+    [onRegistration]
+  );
+
+
   return (
     <form
       className="p-8 growDown"
-      onSubmit={(e) => {
-        e.preventDefault();
-        alert("Signup submitted!");
-      }}
+      onSubmit={e => { e.preventDefault(); onSubmit(); }}
     >
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
         Create Account
@@ -24,10 +51,9 @@ function SignUp({showPassword, handleShowPassword, goTo}: SignUpProps) {
         Get started with your free account
       </p>
       <div className="mb-4">
-        <TextInput label={"Full Name"} type={"text"} placeholder="Enter your full name"/>
-        <TextInput label={"Email"} type={"email"} placeholder="Enter your email"/>
-        <PasswordInput label={"Password"} showPassword={showPassword.signup} handleShowPassword={() => handleShowPassword("signup")} />
-        <PasswordInput label={"Confirm Password"} showPassword={showPassword.signupConfirm} handleShowPassword={() => handleShowPassword("signupConfirm")} />
+        <TextInput value={user?.username} onChange={(value) => {handleFullName(value)}} label={"Full Name"} type={"text"} placeholder="Enter your full name"/>
+        <TextInput value={user?.email} onChange={(value) => {handleEmail(value)}} valid={validEmail} label={"Email"} type={"email"} placeholder="Enter your email"/>
+        <PasswordConfirmationGroup value={user?.password} onChangePassword={(value) => handlePassword(value)} />
       </div>
 
       <label className="flex items-center gap-2 text-gray-600 text-sm mb-4">

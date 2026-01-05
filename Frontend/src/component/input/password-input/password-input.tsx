@@ -1,27 +1,29 @@
+import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
-export type ShowPasswordState = {
-  login: boolean;
-  signup: boolean;
-  signupConfirm: boolean;
-};
-
 type AuthProps = {
+  value: string | undefined;
   label: string;
-  showPassword: boolean;
-  handleShowPassword: () => void;
+  onChange: (value: string) => void;
 };
 
-function PasswordInput({ label, showPassword, handleShowPassword }: AuthProps) {
+function PasswordInput({ value, label, onChange }: AuthProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const handleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  }
   return (
     <div className="mb-4 relative">
       <label className="block mb-2 font-medium text-gray-700">{label}</label>
 
       <div className="flex border rounded-lg focus-within:ring-2 focus-within:ring-blue-400">
         <input
+          value={value}
           type={showPassword ? "text" : "password"}
           className="w-full p-3 rounded-l-lg focus:outline-none"
           placeholder="Enter your password"
+          onChange={(e) => onChange(e.target.value)}
           required
         />
         <span

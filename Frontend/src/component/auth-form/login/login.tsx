@@ -1,20 +1,39 @@
-import PasswordInput, { type ShowPasswordState } from "../../input/password-input/password-input";
+import { useCallback, useState } from "react";
+import PasswordInput from "../../input/password-input/password-input";
 import type { AuthView } from "../auth-form";
+import type { LoginRequestDto } from "../../../api/client";
+import { isEmail } from "../../../utils/validation";
+import TextInput from "../../input/text-input/text-input";
 
 type LoginProps = {
-  showPassword: ShowPasswordState,
-  handleShowPassword: (field: keyof ShowPasswordState) => void;
+  user: LoginRequestDto | undefined;
+  onLogin: (property: keyof LoginRequestDto, value: string | undefined) => void;
   goTo: (view: AuthView) => void;
+  onSubmit: () => Promise<void>;
 }
 
-function Login({showPassword, handleShowPassword, goTo}: LoginProps) {
+function Login({user, onLogin, goTo, onSubmit}: LoginProps) {
+  const [validLoginEmail, setLoginEmailValid] = useState<boolean>(true);
+  // const isFormValid = !!user?.email && validLoginEmail && !!user?.password;
+
+  const handleEmail = useCallback(
+    (value: string) => {
+      onLogin("email", value);
+      setLoginEmailValid(isEmail(value));
+    },
+    [onLogin]
+  );
+
+  const handlePassword = useCallback(
+    (value: string) => {
+      onLogin("password", value);
+    },
+    [onLogin]
+  );
   return (
     <form
-      className="p-8 growDown"
-      onSubmit={(e) => {
-        e.preventDefault();
-        alert("Login submitted!");
-      }}
+      className="p-8 growDown relative"
+      onSubmit={e => { e.preventDefault(); onSubmit(); }}
     >
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
         Welcome Back
@@ -22,16 +41,11 @@ function Login({showPassword, handleShowPassword, goTo}: LoginProps) {
       <p className="text-center text-gray-500 mb-6">
         Please enter your details to sign in
       </p>
+      {/* SKAPA ETT FELMEDDELANDE OM EMAIL ELLER LÖSENORD ÄR FELAKTIGT */}
       <div className="mb-4">
-        <label className="block mb-2 font-medium text-gray-700">Email</label>
-        <input
-          type="email"
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          placeholder="Enter your email"
-          required
-        />
+        <TextInput value={user?.email} onChange={(value) => {handleEmail(value)}} valid={validLoginEmail} label={"Email"} type={"email"} placeholder="Enter your email"/>
+        <PasswordInput value={user?.password} onChange={(value) => {handlePassword(value)}} label={"Password"} />
       </div>
-      <PasswordInput label={"Password"} showPassword={showPassword.login} handleShowPassword={() => handleShowPassword("login")} />
 
       <div className="flex justify-between items-center mb-4">
         <label className="flex items-center gap-2">

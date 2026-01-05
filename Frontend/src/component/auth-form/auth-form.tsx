@@ -1,31 +1,26 @@
-import { useCallback, useState } from "react";
-import type { ShowPasswordState } from "../input/password-input/password-input";
+import { useState } from "react";
+import type { LoginRequestDto, RegisterUserDto } from "../../api/client";
 import SignUp from "./sign-up/sign-up";
 import Login from "./login/login";
+import LoadingSpinner from "../loading-spinner/loading-spinner";
 
 export type AuthView = "login" | "signup";
+type AuthFormProps = {
+  registrationUser: RegisterUserDto | undefined;
+  loginUser: LoginRequestDto | undefined;
+  loading: boolean;
+  onRegistration: (property: keyof RegisterUserDto, value: string | undefined) => void;
+  onLogin: (property: keyof LoginRequestDto, value: string | undefined) => void;
+  onSubmitLogin: () => Promise<void>;
+  onSubmitRegister: () => Promise<void>;
+}
 
-export default function AuthForm() {
-const [view, setView] = useState<AuthView>("login");
-  const [showPassword, setShowPassword] = useState<ShowPasswordState >({
-    login: false,
-    signup: false,
-    signupConfirm: false,
-  });
-
-const handleShowPassword = useCallback(
-  (field: keyof ShowPasswordState , value?: boolean) => {
-    setShowPassword((prev) => ({
-      ...prev,
-      [field]: value !== undefined ? value : !prev[field],
-    }));
-  },
-  []
-);
+function AuthForm({registrationUser, loginUser, loading, onRegistration, onLogin, onSubmitLogin, onSubmitRegister}: AuthFormProps) {
+  const [view, setView] = useState<AuthView>("login");
 
   return (
     <div className="w-lg mx-auto mt-20">
-      <div className="w-full bg-white rounded-xl shadow-xl overflow-hidden">
+      <div className="relative w-full bg-white rounded-xl shadow-xl overflow-hidden">
         
         {/* Toggle Buttons */}
         <div className="flex border-b border-gray-200">
@@ -47,21 +42,32 @@ const handleShowPassword = useCallback(
 
         {view === "login" && (
           <Login
-            showPassword={showPassword}
-            handleShowPassword={handleShowPassword}
+            user={loginUser}
+            onLogin={onLogin}
             goTo={setView}
+            onSubmit={onSubmitLogin}
           />
         )}
 
         {view === "signup" && (
           <SignUp
-            showPassword={showPassword}
-            handleShowPassword={handleShowPassword}
+            user={registrationUser}
+            onRegistration={onRegistration}
             goTo={setView}
+            onSubmit={onSubmitRegister}
           />
         )}
-
+        {loading && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center
+                          bg-white/10 backdrop-blur-sm">
+                          
+            <LoadingSpinner size={24} />
+        
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
+export default AuthForm;
