@@ -8,7 +8,7 @@ export type SidebarItemProps = {
 
 export function SidebarItem({ item, collapsed }: SidebarItemProps) {
   return (
-    <li className={`${collapsed ? "w-20" : "w-84"} bg-neutral-300 text-gray-700 h-14`}>
+    <li className={`${collapsed && "min-w-20"} w-full bg-neutral-300 text-gray-700 h-14`}>
       <NavLink
         to={item.goTo}
         className={({ isActive }) =>
@@ -19,7 +19,7 @@ export function SidebarItem({ item, collapsed }: SidebarItemProps) {
       >
         <span className="text-xl shrink-0">{item.icon}</span>
         { !collapsed && 
-          <span className="flex-1 transition-opacity duration-300">{item.label}</span>
+          <span className="flex-1 transition-opacity duration-400 truncate">{item.label}</span>
         }
       </NavLink>
     </li>

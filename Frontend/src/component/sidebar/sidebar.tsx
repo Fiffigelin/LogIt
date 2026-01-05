@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiLogOut, FiMenu } from "react-icons/fi";
-import { TiChevronRight } from "react-icons/ti";
+import { BiSolidCat } from "react-icons/bi";
 import { SidebarItem } from "./sidebar-item";
 
 export type SidebarItem = {
@@ -20,17 +20,9 @@ export default function Sidebar({ title, sidebarItems }: NavItem) {
   
   const LOGOUT: SidebarItem = {
     label: "Log Out",
-    icon: <FiLogOut />,
+    icon: <FiLogOut size={24} />,
     goTo: "",
   }
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setCollapsed(window.innerWidth < 768);
-  //   };
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
 
   const handleToggle = () => {
     setCollapsed((prev) => !prev);
@@ -42,24 +34,26 @@ export default function Sidebar({ title, sidebarItems }: NavItem) {
 
   return (
     <aside
-      className={`flex flex-col bg-neutral-300 text-gray-700 h-100vh transition-all duration-300 ${
-        collapsed ? "w-20" : "w-84"
+      className={`flex flex-col bg-neutral-300 text-gray-700 h-screen transition-[width] duration-500 ease-in-out ${
+        collapsed ?  "w-20" : "w-md"
       }`}
     >
       {/* Logo + Toggle */}
-      <div className={`flex items-center border-b border-neutral-400 p-4 ${collapsed ? "justify-center" : "justify-between"}`}>
+      <div className={`flex items-center border-b border-neutral-400 p-4 
+          ${collapsed ? "justify-center" : "justify-between"}`}
+      >
         {!collapsed && (
-          <div className="flex items-center justify-center gap-2 font-bold text-lg">
-            <TiChevronRight className="text-2xl self-center text-gray-600" />
+          <div className="flex items-center gap-2 font-bold text-lg transition-opacity duration-500 ease-in-out">
+            <BiSolidCat size={32} className="text-2xl self-center text-blue-700" />
             <span>{title}</span>
           </div>
         )}
         <button
           onClick={handleToggle}
           aria-label="Toggle menu"
-          className="text-gray-600 hover:text-black text-2xl p-1 focus:outline-none"
+          className="text-gray-600 hover:text-black text-2xl p-1 focus:outline-none transition-colors duration-200"
         >
-          <FiMenu />
+          <FiMenu size={26} />
         </button>
       </div>
 
