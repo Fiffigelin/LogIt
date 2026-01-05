@@ -1,4 +1,5 @@
 using Backend.Models.DTOs.Auth;
+using Backend.Models.Wrappers;
 using Backend.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,13 +17,25 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginRequestDto dto)
+    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login([FromBody] LoginRequestDto dto)
     {
         var response = await _authService.LoginAsync(dto);
         if (response == null)
-            return Unauthorized("Ogiltiga inloggningsuppgifter");
+        {
+            return Unauthorized(new ApiResponse<AuthResponseDto>
+            {
+                Success = false,
+                Message = "Ogiltiga inloggningsuppgifter",
+                Data = null
+            });
+        }
 
-        return Ok(response);
+        return Ok(new ApiResponse<AuthResponseDto>
+        {
+            Success = true,
+            Message = "Inloggning lyckades",
+            Data = response
+        });
     }
 
     [HttpPost("register")]

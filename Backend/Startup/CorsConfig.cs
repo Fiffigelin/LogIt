@@ -9,7 +9,7 @@ public static class CorsConfig
         {
             options.AddPolicy(AllowAllPolicy, policy =>
             {
-                policy.WithOrigins("http://localhost:5173")
+                policy.WithOrigins("http://localhost:5178")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials();

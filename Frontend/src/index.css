@@ -92,3 +92,13 @@
 .c-space {
   @apply sm:px-10 px-5 lg:px-15;
 }
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Onest", sans-serif;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
