@@ -35,7 +35,7 @@ export default function Sidebar({ title, sidebarItems }: NavItem) {
   return (
     <aside
       className={`flex flex-col bg-neutral-300 text-gray-700 h-screen transition-[width] duration-500 ease-in-out ${
-        collapsed ?  "w-20" : "w-md"
+        collapsed ?  "w-20" : "w-sm"
       }`}
     >
       {/* Logo + Toggle */}
