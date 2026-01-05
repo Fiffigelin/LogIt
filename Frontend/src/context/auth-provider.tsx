@@ -3,14 +3,19 @@ import { ConfigurationProvider } from "../api/client-base";
 import { AuthContext } from "./auth-context";
 import { getFromCache, removeCacheIfPossible, setCacheIfPossible } from "./cache-helper";
 import { requireMessage } from "../api/api-utils";
-import { type AuthResponseDto, type AuthResponseDtoApiResponse, type LoginRequestDto, type RegisterUserDto, AuthClient } from "../api/client";
+import { type AuthResponseDtoApiResponse, type LoginRequestDto, type RegisterUserDto, type UserProfileDto, AuthClient } from "../api/client";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<AuthResponseDto | null>(() =>
-    getFromCache<AuthResponseDto>("authToken", true)
+  const [user, setUser] = useState<UserProfileDto | null>(() =>
+    getFromCache("auth_user", true)
   );
+
+  const [token, setToken] = useState<string | null>(() =>
+    getFromCache("auth_token", true)
+  );
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,13 +28,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const client = new AuthClient(new ConfigurationProvider(undefined, baseUrl));
       const response = await client.login(credentials);
 
-      if (!response.success || !response.data) {
+      if (!response.success || !response.data?.token || !response.data.user) {
         setError(requireMessage(response.message));
         return;
       }
 
-      setUser(response.data);
-      setCacheIfPossible("authToken", response.data, true);
+      setUser(response.data.user);
+      setToken(response.data.token);
+
+      setCacheIfPossible("auth_user", response.data.user, true);
+      setCacheIfPossible("auth_token", response.data.token, true);
 
     } catch (err: any) {
 
@@ -73,6 +81,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading, error }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, token, login, register, logout, loading, error }}>{children}</AuthContext.Provider>
   );
 };

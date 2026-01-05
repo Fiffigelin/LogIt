@@ -8,7 +8,7 @@ import Header from "../../component/header/header";
 export default function PrivateLayout() {
   const { user } = useAuthContext();
 
-  if (!user?.user) {
+  if (!user) {
     return <p>Loading...</p>;
   }
 
@@ -21,8 +21,8 @@ export default function PrivateLayout() {
     <div className="min-h-screen min-w-screen overflow-y-hidden flex">
       <Sidebar title="" sidebarItems={navItems} />
       <section className="w-full flex flex-col bg-neutral-50">
-        <Header name={user.user.username} />
-        <Outlet context={{ user: user.user }} />
+        <Header name={user.username} />
+        <Outlet context={{ user: user }} />
       </section>
     </div>
   );

@@ -1,11 +1,14 @@
 import { createContext, useContext } from "react";
-import type { AuthResponseDto, LoginRequestDto, RegisterUserDto } from "../api/client";
+import type { LoginRequestDto, RegisterUserDto, UserProfileDto } from "../api/client";
 
 export type AuthContextType = {
-  user: AuthResponseDto | null;
+  user: UserProfileDto | null;
+  token: string | null;
+
   login: (credentials: LoginRequestDto) => Promise<void>;
   register: (credentials: RegisterUserDto) => Promise<void>;
   logout: () => void;
+
   loading: boolean;
   error: string | null;
 };
