@@ -1,63 +1,5 @@
 @import "tailwindcss";
 
-
-/* SE ÖVER STYLING - RÖRIG FÖR TILLFÄLLET */
-:root {
-  --color-primary: #f3f4f6;
-  --color-background: #e5e7eb;
-  --color-modal: #fff8f4;
-  --color-storm: #282b4b;
-  --color-grape: #562e74;
-  /* --color-gem: #06808E; */
-  --color-gem: #3691a3;
-  --color-black: #000000;
-  --color-ametist: #ac8cb5;
-  
-  /* Parallax */
-  --color-fullest: #fafafa;
-  --color-sky: #f4cbd4;
-  --color-mountain: #bba1c3;
-  --color-outline: #000000;
-  --color-ground: #f7f1ee;
-  --color-tree: #f7f1ee;
-  --color-tree_darker: #ecded7;
-  
-  /* Font */
-  --color-text_primary: #0c0a09;
-  --color-text_secondary: #0f172b;
-  --color-text_subtext: #211b41;
-  --color-text_accent: #562e74;
-  --color-text_neutral: #404040;
-  --color-text_gem: #137488;
-
-  /* Animation */
-  --animate-orbit: orbit 50s linear infinite;
-}
-
-.dark {
-  --color-primary: #000000;
-  --color-background: #020618;
-  --color-modal: #01030e;
-  --color-storm: #282b4b;
-  /* --color-ametist: #45304c; */
-  --color-ametist: #38273d;
-  
-  /* Parallax */
-  --color-fullest: #000000;
-  --color-outline: #ffffff;
-  --color-ground: #020618;
-  --color-tree: #0f172b;
-  --color-tree_darker: #1e2e56;
-  
-  /* Font */
-  --color-text_primary: #fff;
-  --color-text_secondary: #f7f1ee;
-  --color-text_subtext: #bba1c3;
-  --color-text_accent: #f4cbd4;
-  --color-text_neutral: #d4d4d4;
-  --color-text_gem: #30c4d4;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -87,10 +29,6 @@
 .growDown {
   overflow: hidden;
   animation: growDown 0.8s ease-out;
-}
-
-.c-space {
-  @apply sm:px-10 px-5 lg:px-15;
 }
 
 html {
