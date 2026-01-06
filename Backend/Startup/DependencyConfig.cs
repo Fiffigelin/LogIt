@@ -1,8 +1,9 @@
-using Backend.Data;
-using Backend.Models.Entities;
-using Backend.Repositories;
-using Backend.Services;
-using Backend.Services.Auth;
+using Backend.Application.Auth;
+using Backend.Application.Swagger;
+using Backend.Domain.Entities;
+using Backend.Infrastructure.Persistence.Data;
+using Backend.Infrastructure.Persistence.Repositories.UserRepository;
+using Backend.Infrastructure.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,15 +19,12 @@ public static class DependenciesConfig
         builder.Services.AddDbContext<LogItDbContext>(options =>
             options.UseSqlite(DatabaseConfig.ConnectionString));
 
-        // Repos
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ITokenService, TokenService>();
-        builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-        // Services
+        builder.Services.AddScoped<LoginUseCase>();
+        builder.Services.AddScoped<RegisterUseCase>();
         builder.Services.AddScoped<UserService>();
-        builder.Services.AddScoped<AuthService>();
-        builder.Services.AddScoped<TokenService>();
     }
 }

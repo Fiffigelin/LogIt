@@ -9,7 +9,7 @@ import ClientBase, { ConfigurationProvider } from "./client-base";
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-export class AuthClient extends ClientBase {
+export class LoginClient extends ClientBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -24,8 +24,8 @@ export class AuthClient extends ClientBase {
      * @param body (optional) 
      * @return OK
      */
-    login(body: LoginRequestDto | undefined): Promise<AuthResponseDtoApiResponse> {
-        let url_ = this.baseUrl + "/api/Auth/login";
+    login(body: LoginRequestDto | undefined): Promise<LoginResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/Login";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -46,13 +46,13 @@ export class AuthClient extends ClientBase {
         });
     }
 
-    protected processLogin(response: Response): Promise<AuthResponseDtoApiResponse> {
+    protected processLogin(response: Response): Promise<LoginResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as AuthResponseDtoApiResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as LoginResponseDtoApiResponse;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -60,15 +60,27 @@ export class AuthClient extends ClientBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<AuthResponseDtoApiResponse>(null as any);
+        return Promise.resolve<LoginResponseDtoApiResponse>(null as any);
+    }
+}
+
+export class RegisterClient extends ClientBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(configuration: ConfigurationProvider, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super(configuration);
+        this.http = http ? http : window as any;
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
      * @param body (optional) 
      * @return OK
      */
-    register(body: RegisterUserDto | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Auth/register";
+    register(body: RegisterRequestDto | undefined): Promise<RegisterResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/Register";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -78,6 +90,7 @@ export class AuthClient extends ClientBase {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -88,19 +101,21 @@ export class AuthClient extends ClientBase {
         });
     }
 
-    protected processRegister(response: Response): Promise<void> {
+    protected processRegister(response: Response): Promise<RegisterResponseDtoApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RegisterResponseDtoApiResponse;
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<RegisterResponseDtoApiResponse>(null as any);
     }
 }
 
@@ -194,7 +209,7 @@ export class UserClient extends ClientBase {
     /**
      * @return OK
      */
-    getAllUsers(): Promise<UserDtoIEnumerableApiResponse> {
+    getAllUsers(): Promise<TestUserDtoIEnumerableApiResponse> {
         let url_ = this.baseUrl + "/api/User/all";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -212,13 +227,13 @@ export class UserClient extends ClientBase {
         });
     }
 
-    protected processGetAllUsers(response: Response): Promise<UserDtoIEnumerableApiResponse> {
+    protected processGetAllUsers(response: Response): Promise<TestUserDtoIEnumerableApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserDtoIEnumerableApiResponse;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TestUserDtoIEnumerableApiResponse;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -226,19 +241,8 @@ export class UserClient extends ClientBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserDtoIEnumerableApiResponse>(null as any);
+        return Promise.resolve<TestUserDtoIEnumerableApiResponse>(null as any);
     }
-}
-
-export interface AuthResponseDto {
-    token?: string | undefined;
-    user?: UserProfileDto;
-}
-
-export interface AuthResponseDtoApiResponse {
-    success?: boolean;
-    message: string | undefined;
-    data?: AuthResponseDto;
 }
 
 export interface BooleanApiResponse {
@@ -252,23 +256,45 @@ export interface LoginRequestDto {
     password?: string | undefined;
 }
 
-export interface RegisterUserDto {
+export interface LoginResponseDto {
+    token?: string | undefined;
+    user?: UserProfileDto;
+}
+
+export interface LoginResponseDtoApiResponse {
+    success?: boolean;
+    message: string | undefined;
+    data?: LoginResponseDto;
+}
+
+export interface RegisterRequestDto {
     username?: string | undefined;
     email?: string | undefined;
     password?: string | undefined;
 }
 
-export interface UserDto {
+export interface RegisterResponseDto {
+    success?: boolean;
+    message?: string | undefined;
+}
+
+export interface RegisterResponseDtoApiResponse {
+    success?: boolean;
+    message: string | undefined;
+    data?: RegisterResponseDto;
+}
+
+export interface TestUserDto {
     id?: string;
     username?: string | undefined;
     email?: string | undefined;
     passwordHash?: string | undefined;
 }
 
-export interface UserDtoIEnumerableApiResponse {
+export interface TestUserDtoIEnumerableApiResponse {
     success?: boolean;
     message: string | undefined;
-    data?: UserDto[] | undefined;
+    data?: TestUserDto[] | undefined;
 }
 
 export interface UserProfileDto {

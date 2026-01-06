@@ -15,3 +15,8 @@ dotnet dev-certs https --trust
 dotnet run --launch-profile "https"
 ```
 
+=====================================================================           
+===||                    Default user created                    ||==           
+===||                    Email: bojack-horse@mail.com            ||==           
+===||                    Password: Bojack123!?                   ||==           
+=====================================================================  

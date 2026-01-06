@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
-import type { LoginRequestDto, RegisterUserDto } from "../../api/client";
+import type { LoginRequestDto, RegisterRequestDto } from "../../api/client";
 import AuthForm from "../../component/auth-form/auth-form";
 import { useAuthContext } from "../../context/auth-context";
 
 function Login() {
-  const [regUser, setRegUser] = useState<RegisterUserDto>({
+  const [regUser, setRegUser] = useState<RegisterRequestDto>({
     username: "",
     email: "",
     password: ""
@@ -16,7 +16,7 @@ function Login() {
   const {login, register, loading} = useAuthContext();
 
   const handleRegistration = useCallback(
-    (property: keyof RegisterUserDto, value: string | undefined) => {
+    (property: keyof RegisterRequestDto, value: string | undefined) => {
       setRegUser((prevState) => {
         return {
           ...prevState,

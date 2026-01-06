@@ -1,4 +1,4 @@
-using Backend.Data;
+using Backend.Infrastructure.Persistence.Data;
 using Backend.Startup;
 using LogIt.Backend.Extensions;
 var builder = WebApplication.CreateBuilder(args);

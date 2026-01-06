@@ -2,6 +2,8 @@ import { useState } from "react";
 import { FiLogOut, FiMenu } from "react-icons/fi";
 import { BiSolidCat } from "react-icons/bi";
 import { SidebarItem } from "./sidebar-item";
+import { useAuthContext } from "../../context/auth-context";
+import { useNavigate } from "react-router-dom";
 
 export type SidebarItem = {
   label: string,
@@ -16,7 +18,9 @@ export type NavItem = {
 
 
 export default function Sidebar({ title, sidebarItems }: NavItem) {
+  const { logout } = useAuthContext();
   const [collapsed, setCollapsed] = useState<boolean>(window.innerWidth < 768);
+  const navigate = useNavigate();
   
   const LOGOUT: SidebarItem = {
     label: "Log Out",
@@ -29,7 +33,8 @@ export default function Sidebar({ title, sidebarItems }: NavItem) {
   };
 
   const handleLogout = () => {
-    console.log("Logging out...");
+    logout();
+    navigate("/", {replace: true});
   };
 
   return (

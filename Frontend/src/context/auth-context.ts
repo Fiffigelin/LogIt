@@ -1,16 +1,24 @@
 import { createContext, useContext } from "react";
-import type { LoginRequestDto, RegisterUserDto, UserProfileDto } from "../api/client";
+import type { LoginRequestDto, RegisterRequestDto, UserProfileDto } from "../api/client";
+
+export type AuthStatus = {
+  type: "success" | "error";
+  message: string | undefined;
+};
 
 export type AuthContextType = {
   user: UserProfileDto | null;
   token: string | null;
 
   login: (credentials: LoginRequestDto) => Promise<void>;
-  register: (credentials: RegisterUserDto) => Promise<void>;
+  register: (credentials: RegisterRequestDto) => Promise<void>;
   logout: () => void;
 
   loading: boolean;
   error: string | null;
+
+  status: AuthStatus | null;
+  clearStatus: () => void;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

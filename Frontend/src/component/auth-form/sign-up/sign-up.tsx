@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
-import type { RegisterUserDto } from "../../../api/client";
+import type { RegisterRequestDto } from "../../../api/client";
 import type { AuthView } from "../auth-form";
 import { isEmail } from "../../../utils/validation";
 import TextInput from "../../input/text-input/text-input";
 import PasswordConfirmationGroup from "../../input/password-confirmation-group/password-confirmation";
 
 type SignUpProps = {
-  user: RegisterUserDto | undefined;
-  onRegistration: (property: keyof RegisterUserDto, value: string | undefined) => void;
+  user: RegisterRequestDto | undefined;
+  onRegistration: (property: keyof RegisterRequestDto, value: string | undefined) => void;
   goTo: (view: AuthView) => void;
   onSubmit: () => Promise<void>;
 }

@@ -16,7 +16,7 @@ namespace Backend.Validations
     {
       if (string.IsNullOrWhiteSpace(username)) return false;
 
-      var regex = @"^[a-zA-Z0-9_-]{3,20}$";
+      var regex = @"^(?! )[a-zA-Z0-9 _-]{3,20}(?<! )$";
       return Regex.IsMatch(username, regex);
     }
 
@@ -36,7 +36,7 @@ namespace Backend.Validations
 
       return Regex.IsMatch(name, regex);
     }
-    
+
     public static bool IsValidPhoneNumber(string phoneNumber)
     {
       if (string.IsNullOrWhiteSpace(phoneNumber)) return false;

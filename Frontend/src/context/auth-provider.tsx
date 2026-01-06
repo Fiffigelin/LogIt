@@ -1,9 +1,9 @@
 import { useState, useCallback, type ReactNode } from "react";
 import { ConfigurationProvider } from "../api/client-base";
-import { AuthContext } from "./auth-context";
+import { AuthContext, type AuthStatus } from "./auth-context";
 import { getFromCache, removeCacheIfPossible, setCacheIfPossible } from "./cache-helper";
 import { requireMessage } from "../api/api-utils";
-import { type AuthResponseDtoApiResponse, type LoginRequestDto, type RegisterUserDto, type UserProfileDto, AuthClient } from "../api/client";
+import { LoginClient, RegisterClient, type LoginRequestDto, type RegisterRequestDto, type UserProfileDto } from "../api/client";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -18,18 +18,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [status, setStatus] = useState<AuthStatus | null>(null);
 
   const login = useCallback(async (credentials: LoginRequestDto) => {
     setLoading(true);
     setError("");
+    setStatus(null);
 
     try {
-      const client = new AuthClient(new ConfigurationProvider(undefined, baseUrl));
+      const client = new LoginClient(new ConfigurationProvider(undefined, baseUrl));
       const response = await client.login(credentials);
 
       if (!response.success || !response.data?.token || !response.data.user) {
-        setError(requireMessage(response.message));
+        setStatus({ type: "error", message: requireMessage(response.message) });
         return;
       }
 
@@ -39,34 +40,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setCacheIfPossible("auth_user", response.data.user, true);
       setCacheIfPossible("auth_token", response.data.token, true);
 
-    } catch (err: any) {
+      setStatus({ type: "success", message: response.message });
 
-      if (err?.response) {
-        try {
-          const apiError = JSON.parse(err.response) as AuthResponseDtoApiResponse;
-          setError(requireMessage(apiError.message));
-          return;
-        } catch { }
-      }
-
-      setError("Ett oväntat serverfel uppstod");
+    } catch {
+      setStatus({ type: "error", message: "Kunde inte logga in" });
     }
     finally {
       setLoading(false);
     }
   }, []);
 
-  const register = useCallback(async (credentials: RegisterUserDto) => {
+  const register = useCallback(async (credentials: RegisterRequestDto) => {
     setLoading(true);
     setError("");
     try {
-      const client = new AuthClient(new ConfigurationProvider(undefined, baseUrl));
+      const client = new RegisterClient(new ConfigurationProvider(undefined, baseUrl));
       
       await client.register(credentials);
-      await login({ email: credentials.email, password: credentials.password });
+      // await login({ email: credentials.email, password: credentials.password });
 
     } catch (err) {
-      console.error(err);
       setError((err as Error).message);
     } finally {
       setLoading(false);
@@ -76,11 +69,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
   const logout = useCallback(() => {
-    removeCacheIfPossible("authToken", true);
+    removeCacheIfPossible("auth_user", true);
+    removeCacheIfPossible("auth_token", true);
+
     setUser(null);
+    setToken(null);
+
+    setStatus(null);
+  }, []);
+
+  const clearStatus = useCallback(() => {
+    setStatus(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, loading, error }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, token, status, login, register, logout, clearStatus, loading, error }}>{children}</AuthContext.Provider>
   );
 };
