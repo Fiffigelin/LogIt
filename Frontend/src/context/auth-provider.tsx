@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const response = await client.login(credentials);
 
       if (!response.success || !response.data?.token || !response.data.user) {
-        setStatus({ type: "error", message: requireMessage(response.message) });
+        setStatus({ type: "error", message: requireMessage(response.message), id: "login" });
         return;
       }
 
@@ -40,31 +40,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setCacheIfPossible("auth_user", response.data.user, true);
       setCacheIfPossible("auth_token", response.data.token, true);
 
-      setStatus({ type: "success", message: response.message });
+      setStatus({ type: "success", message: response.message, id: "login" });
 
     } catch {
-      setStatus({ type: "error", message: "Kunde inte logga in" });
+      setStatus({ type: "error", message: "Kunde inte logga in", id: "login" });
     }
     finally {
       setLoading(false);
     }
   }, []);
 
-  const register = useCallback(async (credentials: RegisterRequestDto) => {
-    setLoading(true);
-    setError("");
-    try {
-      const client = new RegisterClient(new ConfigurationProvider(undefined, baseUrl));
-      
-      await client.register(credentials);
-      // await login({ email: credentials.email, password: credentials.password });
+const register = useCallback(async (credentials: RegisterRequestDto) => {
+  setLoading(true);
+  setError("");
+  setStatus(null);
 
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
+  try {
+    const client = new RegisterClient(new ConfigurationProvider(undefined, baseUrl));
+    const resp = await client.register(credentials);
+
+    if (resp.success) {
+      setStatus({ type: "success", message: resp.message, id: "register" });
+    } else {
+      setStatus({ 
+        type: "error", 
+        message: resp.error?.message ?? resp.message ?? "Unknown error", 
+        id: "register" 
+      });
     }
-  }, [login]);
+
+  } catch (err) {
+    const msg = (err as Error)?.message ?? "Unexpected network error";
+    setStatus({ type: "error", message: msg, id: "register" });
+    setError(msg);
+  } finally {
+    setLoading(false);
+  }
+}, [login]);
+
 
 
 

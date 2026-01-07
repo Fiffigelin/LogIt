@@ -22,7 +22,7 @@ public class UserService
       var userDtos = users.Select(user => new TestUserDto
       {
         Id = user.Id,
-        Username = user.Username,
+        Username = user.FullName,
         PasswordHash = user.PasswordHash,
         Email = user.Email
       }).ToList();
@@ -56,7 +56,7 @@ public class UserService
       var userProfile = new UserProfileDto
       {
         Id = user.Id,
-        Username = user.Username,
+        FullName = user.FullName,
         Email = user.Email
       };
 
@@ -87,7 +87,7 @@ public class UserService
       var userProfiles = users.Select(user => new UserProfileDto
       {
         Id = user.Id,
-        Username = user.Username,
+        FullName = user.FullName,
         Email = user.Email
       }).ToList();
 

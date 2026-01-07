@@ -4,23 +4,23 @@ public class User
 {
   private User() { }
 
-  public User(string username, string email)
+  public User(string fullName, string email)
   {
     Id = Guid.NewGuid();
-    SetUsername(username);
+    SetFullName(fullName);
     SetEmail(email);
   }
 
   public Guid Id { get; private set; }
-  public string Username { get; private set; } = null!;
+  public string FullName { get; private set; } = null!;
   public string PasswordHash { get; private set; } = null!;
   public string Email { get; private set; } = null!;
 
-  public void SetUsername(string username)
+  public void SetFullName(string fullName)
   {
-    if (string.IsNullOrWhiteSpace(username))
-      throw new ArgumentException("Username cannot be empty.", nameof(username));
-    Username = username.Trim();
+    if (string.IsNullOrWhiteSpace(fullName))
+      throw new ArgumentException("Username cannot be empty.", nameof(fullName));
+    FullName = fullName.Trim();
   }
 
   public void SetEmail(string email)

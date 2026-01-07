@@ -5,7 +5,7 @@ import { useAuthContext } from "../../context/auth-context";
 
 function Login() {
   const [regUser, setRegUser] = useState<RegisterRequestDto>({
-    username: "",
+    fullName: "",
     email: "",
     password: ""
   });
@@ -13,7 +13,7 @@ function Login() {
     email: "",
     password: ""
   });
-  const {login, register, loading} = useAuthContext();
+  const {login, register, loading, status, clearStatus } = useAuthContext();
 
   const handleRegistration = useCallback(
     (property: keyof RegisterRequestDto, value: string | undefined) => {
@@ -60,6 +60,8 @@ function Login() {
         registrationUser={regUser}
         loginUser={loginUser}
         loading={loading}
+        status={status}
+        clearStatus={clearStatus}
         onRegistration={handleRegistration}
         onLogin={handleLogin}
         onSubmitLogin={handleSubmitLogin}

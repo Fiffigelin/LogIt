@@ -1,18 +1,22 @@
 import { useCallback, useState } from "react";
-import PasswordInput from "../../input/password-input/password-input";
+import { isEmail } from "../../../utils/validation";
 import type { AuthView } from "../auth-form";
 import type { LoginRequestDto } from "../../../api/client";
-import { isEmail } from "../../../utils/validation";
+import type { AuthStatus } from "../../../context/auth-context";
 import TextInput from "../../input/text-input/text-input";
+import PasswordInput from "../../input/password-input/password-input";
+import FormInfo from "../form-info";
 
 type LoginProps = {
   user: LoginRequestDto | undefined;
+  status: AuthStatus | null;
+  clearStatus: () => void;
   onLogin: (property: keyof LoginRequestDto, value: string | undefined) => void;
   goTo: (view: AuthView) => void;
   onSubmit: () => Promise<void>;
 }
 
-function Login({user, onLogin, goTo, onSubmit}: LoginProps) {
+function Login({user, status, clearStatus, onLogin, goTo, onSubmit}: LoginProps) {
   const [validLoginEmail, setLoginEmailValid] = useState<boolean>(true);
   // const isFormValid = !!user?.email && validLoginEmail && !!user?.password;
 
@@ -41,7 +45,11 @@ function Login({user, onLogin, goTo, onSubmit}: LoginProps) {
       <p className="text-center text-gray-500 mb-6">
         Please enter your details to sign in
       </p>
-      {/* SKAPA ETT FELMEDDELANDE OM EMAIL ELLER LÖSENORD ÄR FELAKTIGT */}
+      
+      { status && status.id === "login" && status.type === "error" &&
+        <FormInfo message={status.message} onClose={clearStatus} status={status.type} />
+      }
+
       <div className="mb-4">
         <TextInput value={user?.email} onChange={(value) => {handleEmail(value)}} valid={validLoginEmail} label={"Email"} type={"email"} placeholder="Enter your email"/>
         <PasswordInput value={user?.password} onChange={(value) => {handlePassword(value)}} label={"Password"} />

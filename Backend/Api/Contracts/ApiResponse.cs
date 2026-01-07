@@ -1,8 +1,11 @@
+using Backend.Api.Contracts.Common;
+
 namespace Backend.Api.Contracts;
 
 public class ApiResponse<T>
 {
   public bool Success { get; set; }
-  public required string Message { get; set; }
+  public string? Message { get; set; }
+  public ValidationError? Error { get; set; }
   public T? Data { get; set; }
 }

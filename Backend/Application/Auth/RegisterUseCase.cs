@@ -1,4 +1,6 @@
+using Backend.Api.Contracts;
 using Backend.Api.Contracts.Auth;
+using Backend.Api.Contracts.Common;
 using Backend.Domain.Entities;
 using Backend.Infrastructure.Persistence.Repositories.UserRepository;
 using Backend.Validations;
@@ -17,74 +19,82 @@ public class RegisterUseCase
     _hasher = hasher;
   }
 
-  public async Task<RegisterResponseDto> Execute(RegisterRequestDto dto)
+  public async Task<ApiResponse<RegisterResponseDto>> Execute(RegisterRequestDto dto)
   {
-    Console.WriteLine("execute");
-    User? user = null;
-
-    try
+    var validationError = await ValidateUser(dto);
+    if (validationError != null)
     {
-      Console.WriteLine("try");
-      await ValidateUser(dto);
-      user = new User(dto.Username, dto.Email);
-      Console.WriteLine("new user");
-      user.SetPasswordHash(_hasher.HashPassword(user, dto.Password));
-
-      await _userRepo.AddAsync(user);
-
-      return new RegisterResponseDto
-      {
-        Success = true,
-        Message = "User registered successfully."
-      };
-    }
-    catch (ArgumentException ex)
-    {
-      return new RegisterResponseDto
+      return new ApiResponse<RegisterResponseDto>
       {
         Success = false,
-        Message = ex.Message
+        Message = validationError.Message,
+        Error = validationError
       };
     }
-    catch (Exception)
-    {
-      if (user != null)
-      {
-        await _userRepo.DeleteAsync(user);
-      }
 
-      return new RegisterResponseDto
-      {
-        Success = false,
-        Message = "An unexpected error occurred. Please try again later."
-      };
-    }
+    var user = new User(dto.FullName, dto.Email);
+    user.SetPasswordHash(_hasher.HashPassword(user, dto.Password));
+    await _userRepo.AddAsync(user);
+
+    return new ApiResponse<RegisterResponseDto>
+    {
+      Success = true,
+      Message = "Registration successful"
+    };
   }
+  // public async Task<RegisterResponseDto> Execute(RegisterRequestDto dto)
+  // {
+  //   User? user = null;
 
-  private async Task ValidateUser(RegisterRequestDto dto)
+  //   try
+  //   {
+  //     await ValidateUser(dto);
+  //     user = new User(dto.Username, dto.Email);
+  //     user.SetPasswordHash(_hasher.HashPassword(user, dto.Password));
+
+  //     await _userRepo.AddAsync(user);
+
+  //     return new RegisterResponseDto
+  //     {
+  //       Success = true,
+  //       Message = "User registered successfully."
+  //     };
+  //   }
+  //   catch (ArgumentException ex)
+  //   {
+  //     return new RegisterResponseDto
+  //     {
+  //       Success = false,
+  //       Message = ex.Message
+  //     };
+  //   }
+  //   catch (Exception)
+  //   {
+  //     if (user != null)
+  //     {
+  //       await _userRepo.DeleteAsync(user);
+  //     }
+
+  //     return new RegisterResponseDto
+  //     {
+  //       Success = false,
+  //       Message = "An unexpected error occurred. Please try again later."
+  //     };
+  //   }
+  // }
+
+  private async Task<ValidationError?> ValidateUser(RegisterRequestDto dto)
   {
     if (!InputValidators.IsValidEmail(dto.Email))
-      Console.WriteLine("Invalid email format.");
-    // throw new ArgumentException("Invalid email format.");
-
-    if (!InputValidators.IsValidUsername(dto.Username))
-      Console.WriteLine("Invalid username format.");
-    // throw new ArgumentException("Invalid username format.");
+      return new("email", "Invalid email format");
 
     if (!InputValidators.IsValidPassword(dto.Password))
-      Console.WriteLine("Password must be at least 8 characters, include at least one uppercase letter, " +
-          "one lowercase letter, one number, and one special character.");
-    // throw new ArgumentException(
-    //     "Password must be at least 8 characters, include at least one uppercase letter, " +
-    //     "one lowercase letter, one number, and one special character."
-    // );
-
-    if (await _userRepo.ExistsByUsernameAsync(dto.Username))
-      Console.WriteLine("Username already exists");
-    // throw new ArgumentException("Username already exists");
+      return new("password",
+          "Password must be at least 8 characters, include uppercase, lowercase, number and symbol.");
 
     if (await _userRepo.ExistsByEmailAsync(dto.Email))
-      Console.WriteLine("Email already exists");
-    // throw new ArgumentException("Email already exists");
+      return new("email", "Email already exists");
+
+    return null;
   }
 }

@@ -4,21 +4,25 @@ import type { AuthView } from "../auth-form";
 import { isEmail } from "../../../utils/validation";
 import TextInput from "../../input/text-input/text-input";
 import PasswordConfirmationGroup from "../../input/password-confirmation-group/password-confirmation";
+import type { AuthStatus } from "../../../context/auth-context";
+import FormInfo from "../form-info";
 
 type SignUpProps = {
   user: RegisterRequestDto | undefined;
+  status: AuthStatus | null;
+  clearStatus: () => void;
   onRegistration: (property: keyof RegisterRequestDto, value: string | undefined) => void;
   goTo: (view: AuthView) => void;
   onSubmit: () => Promise<void>;
 }
 
-function SignUp({user, onRegistration, goTo, onSubmit}: SignUpProps) {
+function SignUp({user, status, clearStatus, onRegistration, goTo, onSubmit}: SignUpProps) {
   const [validEmail, setValidEmal] = useState<boolean>(true);
   // const isFormValid = !!user?.email && validLoginEmail && !!user?.password;
 
   const handleFullName = useCallback(
     (value: string) => {
-      onRegistration("username", value);
+      onRegistration("fullName", value);
     },
     [onRegistration]
   );
@@ -50,8 +54,13 @@ function SignUp({user, onRegistration, goTo, onSubmit}: SignUpProps) {
       <p className="text-center text-gray-500 mb-6">
         Get started with your free account
       </p>
+
+      { status && status.id === "register" &&
+        <FormInfo message={status.message} onClose={clearStatus} status={status.type} />
+      }
+
       <div className="mb-4">
-        <TextInput value={user?.username} onChange={(value) => {handleFullName(value)}} label={"Full Name"} type={"text"} placeholder="Enter your full name"/>
+        <TextInput value={user?.fullName} onChange={(value) => {handleFullName(value)}} label={"Full Name"} type={"text"} placeholder="Enter your full name"/>
         <TextInput value={user?.email} onChange={(value) => {handleEmail(value)}} valid={validEmail} label={"Email"} type={"email"} placeholder="Enter your email"/>
         <PasswordConfirmationGroup value={user?.password} onChangePassword={(value) => handlePassword(value)} />
       </div>

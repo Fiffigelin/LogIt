@@ -3,19 +3,22 @@ import type { LoginRequestDto, RegisterRequestDto } from "../../api/client";
 import SignUp from "./sign-up/sign-up";
 import Login from "./login/login";
 import LoadingSpinner from "../loading-spinner/loading-spinner";
+import type { AuthStatus } from "../../context/auth-context";
 
 export type AuthView = "login" | "signup";
 type AuthFormProps = {
   registrationUser: RegisterRequestDto | undefined;
   loginUser: LoginRequestDto | undefined;
   loading: boolean;
+  status: AuthStatus | null;
+  clearStatus: () => void;
   onRegistration: (property: keyof RegisterRequestDto, value: string | undefined) => void;
   onLogin: (property: keyof LoginRequestDto, value: string | undefined) => void;
   onSubmitLogin: () => Promise<void>;
   onSubmitRegister: () => Promise<void>;
 }
 
-function AuthForm({registrationUser, loginUser, loading, onRegistration, onLogin, onSubmitLogin, onSubmitRegister}: AuthFormProps) {
+function AuthForm({registrationUser, loginUser, loading, status, onRegistration, clearStatus, onLogin, onSubmitLogin, onSubmitRegister}: AuthFormProps) {
   const [view, setView] = useState<AuthView>("login");
 
   return (
@@ -43,6 +46,8 @@ function AuthForm({registrationUser, loginUser, loading, onRegistration, onLogin
         {view === "login" && (
           <Login
             user={loginUser}
+            status={status}
+            clearStatus={clearStatus}
             onLogin={onLogin}
             goTo={setView}
             onSubmit={onSubmitLogin}
@@ -52,6 +57,8 @@ function AuthForm({registrationUser, loginUser, loading, onRegistration, onLogin
         {view === "signup" && (
           <SignUp
             user={registrationUser}
+            status={status}
+            clearStatus={clearStatus}
             onRegistration={onRegistration}
             goTo={setView}
             onSubmit={onSubmitRegister}

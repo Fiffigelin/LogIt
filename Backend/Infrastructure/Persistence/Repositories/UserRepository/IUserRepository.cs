@@ -5,7 +5,6 @@ namespace Backend.Infrastructure.Persistence.Repositories.UserRepository;
 public interface IUserRepository
 {
   Task AddAsync(User user);
-  Task<bool> ExistsByUsernameAsync(string username);
   Task<bool> ExistsByEmailAsync(string email);
   Task<IEnumerable<User>> GetAllUsersAsync();
   Task<User?> GetByIdAsync(Guid userId);

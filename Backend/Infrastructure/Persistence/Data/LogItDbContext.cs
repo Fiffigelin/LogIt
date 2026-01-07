@@ -16,10 +16,6 @@ public class LogItDbContext(DbContextOptions<LogItDbContext> options) : DbContex
     modelBuilder.Entity<User>()
         .HasIndex(u => u.Email)
         .IsUnique();
-
-    modelBuilder.Entity<User>()
-        .HasIndex(u => u.Username)
-        .IsUnique();
   }
 }
 

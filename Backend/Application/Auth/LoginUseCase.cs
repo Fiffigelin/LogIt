@@ -29,7 +29,7 @@ public class LoginUseCase(IUserRepository userRepo, IPasswordHasher<User> hasher
       {
         Id = user.Id,
         Email = user.Email,
-        Username = user.Username
+        FullName = user.FullName
       }
     };
   }

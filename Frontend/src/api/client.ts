@@ -110,6 +110,18 @@ export class RegisterClient extends ClientBase {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RegisterResponseDtoApiResponse;
             return result200;
             });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RegisterResponseDtoApiResponse;
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            result500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RegisterResponseDtoApiResponse;
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -247,7 +259,8 @@ export class UserClient extends ClientBase {
 
 export interface BooleanApiResponse {
     success?: boolean;
-    message: string | undefined;
+    message?: string | undefined;
+    error?: ValidationError;
     data?: boolean;
 }
 
@@ -263,12 +276,13 @@ export interface LoginResponseDto {
 
 export interface LoginResponseDtoApiResponse {
     success?: boolean;
-    message: string | undefined;
+    message?: string | undefined;
+    error?: ValidationError;
     data?: LoginResponseDto;
 }
 
 export interface RegisterRequestDto {
-    username?: string | undefined;
+    fullName?: string | undefined;
     email?: string | undefined;
     password?: string | undefined;
 }
@@ -280,7 +294,8 @@ export interface RegisterResponseDto {
 
 export interface RegisterResponseDtoApiResponse {
     success?: boolean;
-    message: string | undefined;
+    message?: string | undefined;
+    error?: ValidationError;
     data?: RegisterResponseDto;
 }
 
@@ -293,20 +308,27 @@ export interface TestUserDto {
 
 export interface TestUserDtoIEnumerableApiResponse {
     success?: boolean;
-    message: string | undefined;
+    message?: string | undefined;
+    error?: ValidationError;
     data?: TestUserDto[] | undefined;
 }
 
 export interface UserProfileDto {
     id?: string;
-    username?: string | undefined;
+    fullName?: string | undefined;
     email?: string | undefined;
 }
 
 export interface UserProfileDtoApiResponse {
     success?: boolean;
-    message: string | undefined;
+    message?: string | undefined;
+    error?: ValidationError;
     data?: UserProfileDto;
+}
+
+export interface ValidationError {
+    field?: string | undefined;
+    message?: string | undefined;
 }
 
 export class SwaggerException extends Error {

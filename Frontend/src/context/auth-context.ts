@@ -4,6 +4,7 @@ import type { LoginRequestDto, RegisterRequestDto, UserProfileDto } from "../api
 export type AuthStatus = {
   type: "success" | "error";
   message: string | undefined;
+  id: "login" | "register";
 };
 
 export type AuthContextType = {
