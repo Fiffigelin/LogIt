@@ -9,7 +9,6 @@ import Page2 from "../pages/private/page-2";
 
 export default function AppRoutes() {
   const { user } = useAuthContext();
-  console.log(user);
   const isAuthenticated = !!user;
 
   return (

@@ -10,9 +10,11 @@ type ShowPasswordState = {
 
 type PasswordProps = {
   value: string | undefined;
+  confirmationValue: string | undefined;
   onChangePassword: (value: string) => void;
+  onChangeConfirmation: (value: string) => void;
 }
-function PasswordConfirmationGroup({value, onChangePassword}: PasswordProps) {
+function PasswordConfirmationGroup({value, confirmationValue, onChangePassword, onChangeConfirmation}: PasswordProps) {
   const [showPassword, setShowPassword] = useState<ShowPasswordState >({
     password: false,
     confirmation: false,
@@ -22,7 +24,6 @@ function PasswordConfirmationGroup({value, onChangePassword}: PasswordProps) {
     confirmation: false,
   });
 
-  const [confirmationValue, setConfirmationValue] = useState<string>("");
   const [isValid, setIsValid] = useState<ShowPasswordState>({
     password: false,
     confirmation: false
@@ -52,7 +53,7 @@ function PasswordConfirmationGroup({value, onChangePassword}: PasswordProps) {
   };
 
   const handleConfirmation = (confirmation: string) => {
-    setConfirmationValue(confirmation);
+    onChangeConfirmation(confirmation);
     setIsValid(prev => ({
       ...prev,
       confirmation: isEqual(confirmation, value),

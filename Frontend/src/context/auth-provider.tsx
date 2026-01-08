@@ -3,7 +3,7 @@ import { ConfigurationProvider } from "../api/client-base";
 import { AuthContext, type AuthStatus } from "./auth-context";
 import { getFromCache, removeCacheIfPossible, setCacheIfPossible } from "./cache-helper";
 import { requireMessage } from "../api/api-utils";
-import { LoginClient, RegisterClient, type LoginRequestDto, type RegisterRequestDto, type UserProfileDto } from "../api/client";
+import { LoginClient, RegisterClient, type LoginRequestDto, type RegisterRequestDto, type RegisterResponseDtoApiResponse, type UserProfileDto } from "../api/client";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-const register = useCallback(async (credentials: RegisterRequestDto) => {
+const register = useCallback(async (credentials: RegisterRequestDto): Promise<RegisterResponseDtoApiResponse> => {
   setLoading(true);
   setError("");
   setStatus(null);
@@ -69,10 +69,12 @@ const register = useCallback(async (credentials: RegisterRequestDto) => {
       });
     }
 
+    return resp;
+    
   } catch (err) {
     const msg = (err as Error)?.message ?? "Unexpected network error";
     setStatus({ type: "error", message: msg, id: "register" });
-    setError(msg);
+    return { success: false, message: msg };
   } finally {
     setLoading(false);
   }

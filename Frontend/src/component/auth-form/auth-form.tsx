@@ -1,18 +1,19 @@
 import { useState } from "react";
-import type { LoginRequestDto, RegisterRequestDto } from "../../api/client";
+import type { LoginRequestDto } from "../../api/client";
 import SignUp from "./sign-up/sign-up";
 import Login from "./login/login";
 import LoadingSpinner from "../loading-spinner/loading-spinner";
 import type { AuthStatus } from "../../context/auth-context";
+import type { RegisterFormModel } from "../../view-models/view-models";
 
 export type AuthView = "login" | "signup";
 type AuthFormProps = {
-  registrationUser: RegisterRequestDto | undefined;
+  registrationUser: RegisterFormModel | undefined;
   loginUser: LoginRequestDto | undefined;
   loading: boolean;
   status: AuthStatus | null;
   clearStatus: () => void;
-  onRegistration: (property: keyof RegisterRequestDto, value: string | undefined) => void;
+  onRegistration: (property: keyof RegisterFormModel, value: string | undefined) => void;
   onLogin: (property: keyof LoginRequestDto, value: string | undefined) => void;
   onSubmitLogin: () => Promise<void>;
   onSubmitRegister: () => Promise<void>;

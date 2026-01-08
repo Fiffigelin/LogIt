@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { LoginRequestDto, RegisterRequestDto, UserProfileDto } from "../api/client";
+import type { LoginRequestDto, RegisterRequestDto, RegisterResponseDtoApiResponse, UserProfileDto } from "../api/client";
 
 export type AuthStatus = {
   type: "success" | "error";
@@ -12,7 +12,7 @@ export type AuthContextType = {
   token: string | null;
 
   login: (credentials: LoginRequestDto) => Promise<void>;
-  register: (credentials: RegisterRequestDto) => Promise<void>;
+  register: (credentials: RegisterRequestDto) => Promise<RegisterResponseDtoApiResponse>;
   logout: () => void;
 
   loading: boolean;

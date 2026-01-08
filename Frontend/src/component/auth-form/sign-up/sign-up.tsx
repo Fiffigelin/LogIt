@@ -1,17 +1,17 @@
 import { useCallback, useState } from "react";
-import type { RegisterRequestDto } from "../../../api/client";
 import type { AuthView } from "../auth-form";
 import { isEmail } from "../../../utils/validation";
 import TextInput from "../../input/text-input/text-input";
 import PasswordConfirmationGroup from "../../input/password-confirmation-group/password-confirmation";
 import type { AuthStatus } from "../../../context/auth-context";
 import FormInfo from "../form-info";
+import type { RegisterFormModel } from "../../../view-models/view-models";
 
 type SignUpProps = {
-  user: RegisterRequestDto | undefined;
+  user: RegisterFormModel | undefined;
   status: AuthStatus | null;
   clearStatus: () => void;
-  onRegistration: (property: keyof RegisterRequestDto, value: string | undefined) => void;
+  onRegistration: (property: keyof RegisterFormModel, value: string | undefined) => void;
   goTo: (view: AuthView) => void;
   onSubmit: () => Promise<void>;
 }
@@ -42,6 +42,13 @@ function SignUp({user, status, clearStatus, onRegistration, goTo, onSubmit}: Sig
     [onRegistration]
   );
 
+  const handleConfirmation = useCallback(
+    (value: string) => {
+      onRegistration("confirmation", value);
+    },
+    [onRegistration]
+  );
+
 
   return (
     <form
@@ -62,7 +69,7 @@ function SignUp({user, status, clearStatus, onRegistration, goTo, onSubmit}: Sig
       <div className="mb-4">
         <TextInput value={user?.fullName} onChange={(value) => {handleFullName(value)}} label={"Full Name"} type={"text"} placeholder="Enter your full name"/>
         <TextInput value={user?.email} onChange={(value) => {handleEmail(value)}} valid={validEmail} label={"Email"} type={"email"} placeholder="Enter your email"/>
-        <PasswordConfirmationGroup value={user?.password} onChangePassword={(value) => handlePassword(value)} />
+        <PasswordConfirmationGroup value={user?.password} confirmationValue={user?.confirmation} onChangePassword={(value) => handlePassword(value)} onChangeConfirmation={(value) => (handleConfirmation(value))} />
       </div>
 
       <label className="flex items-center gap-2 text-gray-600 text-sm mb-4">
