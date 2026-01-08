@@ -56,7 +56,7 @@ export default function Sidebar({ title, sidebarItems }: NavItem) {
         <button
           onClick={handleToggle}
           aria-label="Toggle menu"
-          className="text-gray-600 hover:text-black text-2xl p-1 focus:outline-none transition-colors duration-200"
+          className="text-gray-600 hover:text-black text-2xl p-1 focus:outline-none transition-colors duration-200 cursor-pointer"
         >
           <FiMenu size={26} />
         </button>
