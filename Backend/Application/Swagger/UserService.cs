@@ -1,4 +1,4 @@
-using Backend.Api.Contracts;
+using Backend.Api.Contracts.Common.Wrapper;
 using Backend.Api.Contracts.Auth;
 using Backend.Api.Swagger;
 using Backend.Infrastructure.Persistence.Repositories.UserRepository;

@@ -1,36 +1,50 @@
+using Backend.Api.Contracts.Common.Wrapper;
 using Backend.Api.Contracts.Auth;
-using Backend.Domain.Entities;
+using Backend.Domain.Validation;
 using Backend.Infrastructure.Persistence.Repositories.UserRepository;
 using Backend.Infrastructure.Security;
-using Microsoft.AspNetCore.Identity;
+using Backend.Domain.Entities;
 
-namespace Backend.Application.Auth;
-
-public class LoginUseCase(IUserRepository userRepo, IPasswordHasher<User> hasher, ITokenService tokenService)
+public class LoginUseCase
 {
-  private readonly IUserRepository _userRepo = userRepo;
-  private readonly IPasswordHasher<User> _hasher = hasher;
-  private readonly ITokenService _tokenService = tokenService;
+  private readonly LoginValidator _validator;
+  private readonly ITokenService _tokenService;
+  private readonly IUserRepository _userRepo;
 
-  public async Task<LoginResponseDto?> Execute(LoginRequestDto dto)
+  public LoginUseCase(LoginValidator validator, ITokenService tokenService, IUserRepository userRepo)
   {
-    var user = await _userRepo.GetByEmailAsync(dto.Email);
-    if (user == null) return null;
+    _validator = validator;
+    _tokenService = tokenService;
+    _userRepo = userRepo;
+  }
 
-    var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
-    if (result == PasswordVerificationResult.Failed) return null;
+  public async Task<ApiResponse<LoginResponseDto>> Execute(LoginRequestDto dto)
+  {
+    var error = await _validator.Validate(dto.Email, dto.Password);
+    if (error != null)
+      return new ApiResponse<LoginResponseDto> { Success = false, Error = error };
 
+    var user = await _userRepo.GetByEmailAsync(dto.Email) ?? throw new InvalidOperationException("User should exist after validation.");
     var token = _tokenService.GenerateToken(user);
 
-    return new LoginResponseDto
+    return new ApiResponse<LoginResponseDto>
     {
-      Token = token,
-      User = new UserProfileDto
+      Success = true,
+      Data = new LoginResponseDto
       {
-        Id = user.Id,
-        Email = user.Email,
-        FullName = user.FullName
+        User = MapUserToProfileDto(user),
+        Token = token
       }
+    };
+  }
+
+  private static UserProfileDto MapUserToProfileDto(User user)
+  {
+    return new UserProfileDto
+    {
+      Id = user.Id,
+      Email = user.Email,
+      FullName = user.FullName
     };
   }
 }

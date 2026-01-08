@@ -1,6 +1,4 @@
-using Backend.Api.Contracts.Common;
-
-namespace Backend.Api.Contracts;
+namespace Backend.Api.Contracts.Common.Wrapper;
 
 public class ApiResponse<T>
 {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Backend.Api.Contracts;
+using Backend.Api.Contracts.Common.Wrapper;
 using Backend.Api.Contracts.Auth;
 using Backend.Api.Swagger;
 using Backend.Application.Swagger;

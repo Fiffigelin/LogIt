@@ -1,4 +1,4 @@
-using Backend.Api.Contracts;
+using Backend.Api.Contracts.Common.Wrapper;
 using Backend.Api.Contracts.Auth;
 using Backend.Application.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +15,7 @@ public class RegisterController(RegisterUseCase registerUseCase) : ControllerBas
   [ProducesResponseType(typeof(ApiResponse<RegisterResponseDto>), StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(ApiResponse<RegisterResponseDto>), StatusCodes.Status400BadRequest)]
   [ProducesResponseType(typeof(ApiResponse<RegisterResponseDto>), StatusCodes.Status500InternalServerError)]
-  public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
+  public async Task<ActionResult<ApiResponse<RegisterResponseDto>>> Register([FromBody] RegisterRequestDto dto)
   {
     var result = await _registerUseCase.Execute(dto);
 
