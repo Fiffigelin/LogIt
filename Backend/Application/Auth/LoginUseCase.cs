@@ -22,7 +22,12 @@ public class LoginUseCase
   {
     var error = await _validator.Validate(dto.Email, dto.Password);
     if (error != null)
-      return new ApiResponse<LoginResponseDto> { Success = false, Error = error };
+      return new ApiResponse<LoginResponseDto>
+      {
+        Success = false,
+        Message = error.Message,
+        Error = error
+      };
 
     var user = await _userRepo.GetByEmailAsync(dto.Email) ?? throw new InvalidOperationException("User should exist after validation.");
     var token = _tokenService.GenerateToken(user);

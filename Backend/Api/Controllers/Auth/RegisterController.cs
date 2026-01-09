@@ -12,6 +12,8 @@ public class RegisterController(RegisterUseCase registerUseCase) : ControllerBas
   private readonly RegisterUseCase _registerUseCase = registerUseCase;
 
   [HttpPost]
+  [Produces("application/json")]
+  [Consumes("application/json")]
   [ProducesResponseType(typeof(ApiResponse<RegisterResponseDto>), StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(ApiResponse<RegisterResponseDto>), StatusCodes.Status400BadRequest)]
   [ProducesResponseType(typeof(ApiResponse<RegisterResponseDto>), StatusCodes.Status500InternalServerError)]

@@ -11,20 +11,21 @@ public class LoginController(LoginUseCase loginUseCase) : ControllerBase
   private readonly LoginUseCase _loginUseCase = loginUseCase;
 
   [HttpPost]
+  [Produces("application/json")]
+  [Consumes("application/json")]
   [ProducesResponseType(typeof(ApiResponse<LoginResponseDto>), StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(ApiResponse<LoginResponseDto>), StatusCodes.Status400BadRequest)]
   [ProducesResponseType(typeof(ApiResponse<LoginResponseDto>), StatusCodes.Status500InternalServerError)]
   public async Task<ActionResult<ApiResponse<LoginResponseDto>>> Login([FromBody] LoginRequestDto dto)
   {
-    var response = await _loginUseCase.Execute(dto);
+    var result = await _loginUseCase.Execute(dto);
 
-    if (!response.Success)
-    {
-      return response.Error != null
-          ? BadRequest(response)
-          : StatusCode(500, response);
-    }
+    if (!result.Success && result.Error != null)
+      return BadRequest(result);
 
-    return Ok(response);
+    if (!result.Success)
+      return StatusCode(500, result);
+
+    return Ok(result);
   }
 }
