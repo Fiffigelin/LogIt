@@ -50,38 +50,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-const register = useCallback(async (credentials: RegisterRequestDto): Promise<RegisterResponseDtoApiResponse> => {
-  setLoading(true);
-  setError("");
-  setStatus(null);
+  const register = useCallback(async (credentials: RegisterRequestDto): Promise<RegisterResponseDtoApiResponse> => {
+    setLoading(true);
+    setError("");
+    setStatus(null);
 
-  try {
-    const client = new RegisterClient(new ConfigurationProvider(undefined, baseUrl));
-    const resp = await client.register(credentials);
+    try {
+      const client = new RegisterClient(new ConfigurationProvider(undefined, baseUrl));
+      const resp = await client.register(credentials);
 
-    if (resp.success) {
-      setStatus({ type: "success", message: resp.message, id: "register" });
-    } else {
-      setStatus({ 
-        type: "error", 
-        message: resp.error?.message ?? resp.message ?? "Unknown error", 
-        id: "register" 
-      });
+      if (resp.success) {
+        setStatus({ type: "success", message: resp.message, id: "register" });
+      } else {
+        setStatus({ 
+          type: "error", 
+          message: resp.error?.message ?? resp.message ?? "Unknown error", 
+          id: "register" 
+        });
+      }
+
+      return resp;
+
+    } catch (err) {
+      const msg = (err as Error)?.message ?? "Unexpected network error";
+      setStatus({ type: "error", message: msg, id: "register" });
+      return { success: false, message: msg };
+    } finally {
+      setLoading(false);
     }
-
-    return resp;
-    
-  } catch (err) {
-    const msg = (err as Error)?.message ?? "Unexpected network error";
-    setStatus({ type: "error", message: msg, id: "register" });
-    return { success: false, message: msg };
-  } finally {
-    setLoading(false);
-  }
-}, [login]);
-
-
-
+  }, []);
 
   const logout = useCallback(() => {
     removeCacheIfPossible("auth_user", true);

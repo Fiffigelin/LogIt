@@ -55,6 +55,18 @@ export class LoginClient extends ClientBase {
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as LoginResponseDtoApiResponse;
             return result200;
             });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as LoginResponseDtoApiResponse;
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            let result500: any = null;
+            result500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as LoginResponseDtoApiResponse;
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -288,8 +300,7 @@ export interface RegisterRequestDto {
 }
 
 export interface RegisterResponseDto {
-    success?: boolean;
-    message?: string | undefined;
+    user?: UserProfileDto;
 }
 
 export interface RegisterResponseDtoApiResponse {
