@@ -40,10 +40,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setCacheIfPossible("auth_user", response.data.user, true);
       setCacheIfPossible("auth_token", response.data.token, true);
 
-      setStatus({ type: "success", message: response.message, id: "login" });
+      if (response.success) {
+        setStatus({ type: "success", message: response.message, id: "login" });
+      } else {
+        setStatus({ 
+          type: "error", 
+          message: response.error?.message ?? response.message ?? "Unknown error", 
+          id: "login" 
+        });
+      }
 
-    } catch {
-      setStatus({ type: "error", message: "Kunde inte logga in", id: "login" });
+    } catch (err) {
+      const msg = (err as Error)?.message ?? "Unexpected network error";
+      setStatus({ type: "error", message: msg, id: "login" });
     }
     finally {
       setLoading(false);
